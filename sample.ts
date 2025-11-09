@@ -55,32 +55,24 @@ export function nowAWSDateTimeString(date: Date = new Date()) {
   return convertAWSDateTimeString(date);
 }
 
-// 例: Date型を文字列に変換する処理。共通で使う関数でパラメータの型が複数あるのは、利用者が混乱する。（仕様に依存していないので、ケースが想像できない）
-export function convertDateString(date: Date | string, toFormat: string = 'yyyy/MM/dd'): string {
-  if (typeof date === 'string') {
-    // 文字列型だったときにDateでキャストする
-    try {
-      return format(new Date(date), toFormat);
-    } catch (e) {
-      console.error(e);
-      throw new Error(`[date.ts] 「${date}」は、無効な日付指定です。`);
-    }
-  }
-  return format(date, toFormat);
+// 名称をconvertDateStringからtoStringに変更
+// パラメータのstring型は、使用方法が想像しづらいので削除
+// toFormatは_formatに変更(toStringで変換なのがわかる)
+// このレイヤーだと名前が被りやすいので、もっといい名前は検討したい
+export function toString(date: Date, _format: string = 'yyyy/MM/dd'): string {
+  return format(date, _format);
 }
 
-// 例: 入力フォーム用の日付フォーマットに変換する関数。何かしらの仕様に依存しているようだが、どこのInputFormで使うべきなのかわからないので、選択しづらい
-// 例: フロント側機能で使う関数群に移動したほうが良い？
-// 例: 責務が違う機能それぞれでInputFormだと思って使っている時、片方の仕様が変わった際に、影響範囲が広がるリスクがある
-export function buildDateInputFormFormat(date: Date): string {
-  return convertDateString(date);
-}
-
-// 例: 名称からyyyy/MM/dd HH:mm形式に変換することが想像しづらい
-// 例: どこかの仕様に依存しているなら、そこで隠蔽したほうが使いやすいのでは
-export function convertDateTimeString(date: Date): string {
-  return format(date, 'yyyy/MM/dd HH:mm');
-}
+// convertDateTimeStringを削除し、フォーマットを定数にする
+// 関数名から読み取りづらい関数の乱立を防ぐ
+// 定数名はソースの上の方とかに定義したい
+export const FORMAT_DATETIME_DATETIME = 'yyyy/MM/dd HH:mm';
+export const FORMAT_DATETIME_DATE = 'yyyy/MM/dd';
+export const FORMAT_DATETIME_CALENDAR = 'yyyy-MM-dd';
+export const FORMAT_DATETIME_AWS = "yyyy-MM-dd'T'hh:mm:ss.sss'Z'";
+//export function convertDateTimeString(date: Date): string {
+//  return format(date, 'yyyy/MM/dd HH:mm');
+//}
 
 
 
