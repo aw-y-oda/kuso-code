@@ -1,0 +1,16 @@
+{
+  "name": "sample_202511",
+  "version": "1.0.0",
+  "description": "Sample project with date-fns and date-fns-tz",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "date-fns": "^3.0.0",
+    "date-fns-tz": "^3.0.0"
+  }
+}
