@@ -39,21 +39,27 @@ import { format, parse, addDays, parseISO, addMinutes, startOfDay, differenceInC
 import { toZonedTime, fromZonedTime } from 'date-fns-tz';
 
 
+// ★awstools.tsに移動
 // 例: AWSで使う日付文字列なのはわかる。AWS系の処理をする共通関数で隠蔽したほうが良いのでは？
 // 例: どの機能で使うべきかがわかりやすい命名の方が良い
-export function convertAWSDateTimeString(target: Date): string | false {
-  try {
-    return format(target, "yyyy-MM-dd'T'hh:mm:ss.sss'Z'");
-  } catch (e) {
-    console.warn(e);
-    return false;
-  }
-}
+// -> 
+//export function convertAWSDateTimeString(target: Date): string | false {
+//  try {
+//    return format(target, "yyyy-MM-dd'T'hh:mm:ss.sss'Z'");
+//  } catch (e) {
+//    console.warn(e);
+//    return false;
+//  }
+//}
 
-// 例: 現在日を前のフォーマットで返す関数。デフォルトで現在日時があるが、前の関数で完結しているので不要では？
-export function nowAWSDateTimeString(date: Date = new Date()) {
-  return convertAWSDateTimeString(date);
+// nowAWSDateTimeStringを削除。代わりに、システム共通で使用する現在日時を返す関数を追加
+export function now(): Date {
+  return new Date();
 }
+// ★削除
+//export function nowAWSDateTimeString(date: Date = new Date()) {
+//  return convertAWSDateTimeString(date);
+//}
 
 // 例: Date型を文字列に変換する処理。共通で使う関数でパラメータの型が複数あるのは、利用者が混乱する。（仕様に依存していないので、ケースが想像できない）
 export function convertDateString(date: Date | string, toFormat: string = 'yyyy/MM/dd'): string {
