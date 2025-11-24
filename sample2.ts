@@ -37,44 +37,32 @@ function processOrder(apple: Apple, orange: Orange, grape: Grape, currentDate: D
   const grapeRottenDate = new Date(currentDate);
   grapeRottenDate.setDate(grapeRottenDate.getDate() + 7);
 
-  // わかりきっている条件で区切ってreturnする
-  // 対象となるデータ範囲が大きいものを先に書くと読みやすい
-  // 仕様単位でまとまっていると良いが、条件の漏れに注意
   if (apple.isRotten(currentDate) || orange.isRotten(currentDate) || grape.isRotten(currentDate)) {
     apple.isNeedToOrder = true;
     orange.isNeedToOrder = true;
     grape.isNeedToOrder = true;
-    return;
-  }
-  
-  if (apple.num + orange.num + grape.num >= 6) {
+  } else if (apple.num + orange.num + grape.num >= 6) {
     apple.isNeedToDeliver = true;
     orange.isNeedToDeliver = true;
     grape.isNeedToDeliver = true;
-    return;
-  }
-  if (apple.isRotten(orangeRottenDate) && orange.isRotten(orangeRottenDate)) {
+  } else if (apple.isRotten(orangeRottenDate) && orange.isRotten(orangeRottenDate)) {
     apple.isNeedToDiscard = true;
     orange.isNeedToDiscard = true;
     grape.isNeedToDeliver = true;
-    return;
-  }
-  if (grape.isRotten(orangeRottenDate) && orange.isRotten(orangeRottenDate)) {
+  } else if (grape.isRotten(orangeRottenDate) && orange.isRotten(orangeRottenDate)) {
     grape.isNeedToOrder = true;
     orange.isNeedToOrder = true;
     apple.isNeedToDiscard = true;
-    return;
-  }
-  if (apple.isRotten(appleRottenDate)) {
+  } else if (apple.isRotten(appleRottenDate)) {
     orange.isNeedToDeliver = true;
     grape.isNeedToDeliver = true;
-    return;
-  }
-  if (orange.isRotten(orangeRottenDate)) {
-    orange.isNeedToOrder = true;
-  }
-  if (grape.isRotten(grapeRottenDate)) {
-    grape.isNeedToDiscard = true;
+  } else {
+    if (orange.isRotten(orangeRottenDate)) {
+      orange.isNeedToOrder = true;
+    }
+    if (grape.isRotten(grapeRottenDate)) {
+      grape.isNeedToDiscard = true;
+    }
   }
 
 }
