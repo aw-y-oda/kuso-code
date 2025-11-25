@@ -30,39 +30,28 @@ type Grape = Fruits & { name: 'grape'; }
 function processOrder(apple: Apple, orange: Orange, grape: Grape, currentDate: Date): void {
   const appleRottenDate = new Date(currentDate);
   appleRottenDate.setDate(appleRottenDate.getDate() + 14);
-  
   const orangeRottenDate = new Date(currentDate);
   orangeRottenDate.setDate(orangeRottenDate.getDate() + 21);
-
   const grapeRottenDate = new Date(currentDate);
   grapeRottenDate.setDate(grapeRottenDate.getDate() + 7);
+  const isAnyRotten = apple.isRotten(currentDate) || orange.isRotten(currentDate) || grape.isRotten(currentDate);
+  const totalNum = apple.num + orange.num + grape.num;
+  const appleRottenIn3Weeks = apple.isRotten(orangeRottenDate);
+  const orangeRottenIn3Weeks = orange.isRotten(orangeRottenDate);
+  const grapeRottenIn3Weeks = grape.isRotten(orangeRottenDate);
+  const appleRottenIn2Weeks = apple.isRotten(appleRottenDate);
+  const grapeRottenIn1Week = grape.isRotten(grapeRottenDate);
 
-  if (apple.isRotten(currentDate) || orange.isRotten(currentDate) || grape.isRotten(currentDate)) {
-    apple.isNeedToOrder = true;
-    orange.isNeedToOrder = true;
-    grape.isNeedToOrder = true;
-  } else if (apple.num + orange.num + grape.num >= 6) {
-    apple.isNeedToDeliver = true;
-    orange.isNeedToDeliver = true;
-    grape.isNeedToDeliver = true;
-  } else if (apple.isRotten(orangeRottenDate) && orange.isRotten(orangeRottenDate)) {
-    apple.isNeedToDiscard = true;
-    orange.isNeedToDiscard = true;
-    grape.isNeedToDeliver = true;
-  } else if (grape.isRotten(orangeRottenDate) && orange.isRotten(orangeRottenDate)) {
-    grape.isNeedToOrder = true;
-    orange.isNeedToOrder = true;
-    apple.isNeedToDiscard = true;
-  } else if (apple.isRotten(appleRottenDate)) {
-    orange.isNeedToDeliver = true;
-    grape.isNeedToDeliver = true;
-  } else {
-    if (orange.isRotten(orangeRottenDate)) {
-      orange.isNeedToOrder = true;
-    }
-    if (grape.isRotten(grapeRottenDate)) {
-      grape.isNeedToDiscard = true;
-    }
-  }
+  apple.isNeedToOrder = isAnyRotten || (grapeRottenIn3Weeks && orangeRottenIn3Weeks);
+  orange.isNeedToOrder = isAnyRotten || (grapeRottenIn3Weeks && orangeRottenIn3Weeks) || (!isAnyRotten && totalNum < 6 && !appleRottenIn3Weeks && !grapeRottenIn3Weeks && !appleRottenIn2Weeks && orangeRottenIn3Weeks);
+  grape.isNeedToOrder = isAnyRotten || (grapeRottenIn3Weeks && orangeRottenIn3Weeks);
+  
+  apple.isNeedToDeliver = !isAnyRotten && (totalNum >= 6 || (grapeRottenIn3Weeks && orangeRottenIn3Weeks) || (!appleRottenIn3Weeks && !orangeRottenIn3Weeks && !appleRottenIn2Weeks));
+  orange.isNeedToDeliver = !isAnyRotten && (totalNum >= 6 || (!appleRottenIn3Weeks && !grapeRottenIn3Weeks && !orangeRottenIn3Weeks && appleRottenIn2Weeks));
+  grape.isNeedToDeliver = !isAnyRotten && (totalNum >= 6 || (appleRottenIn3Weeks && orangeRottenIn3Weeks) || (!appleRottenIn3Weeks && !orangeRottenIn3Weeks && appleRottenIn2Weeks));
+  
+  apple.isNeedToDiscard = !isAnyRotten && totalNum < 6 && (appleRottenIn3Weeks && orangeRottenIn3Weeks) || (!isAnyRotten && totalNum < 6 && grapeRottenIn3Weeks && orangeRottenIn3Weeks);
+  orange.isNeedToDiscard = !isAnyRotten && totalNum < 6 && (appleRottenIn3Weeks && orangeRottenIn3Weeks);
+  grape.isNeedToDiscard = !isAnyRotten && totalNum < 6 && !appleRottenIn3Weeks && !orangeRottenIn3Weeks && !appleRottenIn2Weeks && !orangeRottenIn3Weeks && grapeRottenIn1Week;
 
 }
